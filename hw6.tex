@@ -7,13 +7,17 @@
 \usepackage{pgffor} % \foreach
 \usepackage[top=1.4in, bottom=1.4in, left=1.4in, right=1.4in]{geometry}
 \usepackage{tocloft}
+\usepackage{listings}
 
 \graphicspath{{pngs/}}
 
 \renewcommand*\contentsname{Table of Contents}
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 
+\lstset{numbers=left}
+
 \begin{document}
+\sf
 
 \begin{titlepage}
 \begin{center}
@@ -40,9 +44,37 @@ Hugo Rivera\\
 
 \section{Parallel Matrix Multiply Assignment}
 \subsection{Pseudocode}
+Haskell is a declarative language, thus this is declarative pseudocode.
+
+\begin{verbatim}
+a matrix is a 2D array of elements that can be multiplied and added
+
+to multiply two matrices a (dimensions n by m), b (dimensions m by p):
+    let the result be matrix c of dimensions
+    let m = shared dimension of b and a
+            if there is no shared dimension, throw an error
+
+    map (ra ->
+        map (cb ->
+            sum [ra[i]*b[i] | i<-[0..m]])
+        b.cols)
+    a.rows
+\end{verbatim}
+
 \subsection{Haskell Code}
+\lstinputlisting[language=Haskell]{matrix_mult.hs}
 \subsection{Assembly Code Computation}
+Done using ``ghc -S matrix\_mult.hs'' See the appendix.
 \subsection{Assembly Code Multiplication}
+This happens in line 52 after preparing the arguments.
+Haskell performs a jump the number library's integer multiplication
+method ``jmp base\_GHCziNum\_zt\_info'' (instructions for Base.GHC.zahltimes or
+integer mult)
 \subsection{Number of Assembly Code Lines for Multiplication}
+It takes 6 lines of code starting at line 47 to gather the arguments and
+prepare the program for jumping to ``base\_GHCziNum\_zt\_info''
+
+\section{Appendix}
+\lstinputlisting{matrix_mult.s}
 
 \end{document}
